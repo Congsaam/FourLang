@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>콩삼이도 입이 열리는 여행 외국어 500</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐾</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="top-bar">
+        <div class="category-wrapper">
+            <select id="catSelect" onchange="jumpToCategory(event)"></select>
+        </div>
+        <div class="level-badge">
+            <span id="lvl">Lv.1 콩삼이</span>
+            <span id="streak-display" style="margin-left:8px; color: #ff4500; font-weight: bold;"></span>
+            <span id="done-count-display" style="margin-left:8px; color: #f59e0b;">(0)</span>
+        </div>
+        <div class="info-icon" onclick="openHelp()">?</div>
+
+        <div id="help-modal" class="modal-overlay-new">
+            <div class="modal-content-box">
+                <div class="help-header">
+                    <h3>콩삼이 가이드 🐾</h3>
+                    <span class="close-help" onclick="closeHelp()">&times;</span>
+                </div>
+                <div class="help-body">
+                    <section>
+                        <h4>🔥 연속 출석 (Streak)</h4>
+                        <p>매일 앱을 방문하면 불꽃이 타오릅니다! 하루라도 거르면 불꽃이 꺼지니 주의하세요.</p>
+                    </section>
+                    <section>
+                        <h4>⭐ 별표 수집</h4>
+                        <p>어려운 문장은 별표(★)를 눌러보세요. 나만의 단어장이 만들어집니다.</p>
+                    </section>
+                    <section>
+                        <h4>🏆 레벨업 가이드</h4>
+                        <table class="help-table">
+                            <tr>
+                                <th>레벨</th>
+                                <th>필요 문장</th>
+                                <th>테마</th>
+                            </tr>
+                            <tr>
+                                <td>입문/중급</td>
+                                <td>10개~</td>
+                                <td>Blue</td>
+                            </tr>
+                            <tr>
+                                <td>숙련/상급</td>
+                                <td>60개~</td>
+                                <td>Green</td>
+                            </tr>
+                            <tr>
+                                <td>고수/영웅</td>
+                                <td>200개~</td>
+                                <td>Orange</td>
+                            </tr>
+                            <tr>
+                                <td>전설/마스터</td>
+                                <td>400개~</td>
+                                <td>Black</td>
+                            </tr>
+                        </table>
+                        <p align="center" style="padding-top: 20px;">Created by <strong>SHIN KWANGWOOK</strong></p>
+                    </section>
+                </div>
+                <button class="confirm-btn" onclick="closeHelp()">알겠어요!</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="lang-selector">
+        <button id="enBtn" class="lang-btn active en" onclick="setLang('en')">영어</button>
+        <button id="cnBtn" class="lang-btn cn" onclick="setLang('cn')">중국어</button>
+        <button id="jpBtn" class="lang-btn jp" onclick="setLang('jp')">일본어</button>
+        <button id="esBtn" class="lang-btn es" onclick="setLang('es')">스페인어</button>
+    </div>
+
+    <div class="container" id="mainContainer">
+        <span id="speak-action-btn" onclick="speak(event)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#78350f">
+                <path
+                    d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+            </svg>
+        </span>
+        <div class="phrase-main-container">
+            <span id="main" class="phrase-main"></span>
+        </div>
+        <div id="pron" class="pron"></div>
+        <div id="ko" class="phrase-ko"></div>
+        <label class="star-mode-toggle" id="starModeLabel" onclick="event.stopPropagation()">
+            <input type="checkbox" id="starModeCheck" onchange="toggleStarMode(event)">
+            <span>별표만</span>
+        </label>
+        <label class="memo-check" onclick="event.stopPropagation()">
+            <span>완료</span>
+            <input type="checkbox" id="checkDone" onchange="toggleDone(event)">
+        </label>
+    </div>
+
+    <div class="progress-info" id="prog" onclick="showIdxInput(event)">0 / 0</div>
+
+    <div class="ctrl-group">
+        <button onclick="prev(); event.stopPropagation();" class="btn-circle">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z" />
+            </svg>
+        </button>
+        <button onclick="toggle(); event.stopPropagation();" id="tBtn" class="btn-circle">
+            <svg id="playIcon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            <svg id="stopIcon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                <path d="M6 6h12v12H6z" />
+            </svg>
+        </button>
+        <button onclick="next(); event.stopPropagation();" class="btn-circle">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M13 6v12l8.5-6L13 6zM12.5 12L4 6v12l8.5-6z" />
+            </svg>
+        </button>
+        <button onclick="toggleRepeat(); event.stopPropagation();" id="repeatBtn" class="btn-circle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 1l4 4-4 4" />
+                <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                <path d="M7 23l-4-4 4-4" />
+                <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+            </svg>
+        </button>
+    </div>
+
+    <div id="word-modal">
+        <div style="width: 40px; height: 4px; background: #ccc; border-radius: 10px; margin: 12px auto 0;"></div>
+        <div class="modal-content" style="padding: 25px; text-align: center;">
+            <div class="modal-header"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span id="selected-word-display" style="font-size: 22px; font-weight: 800; color: #78350f;">단어</span>
+                <button onclick="closeModal()" class="close-btn"
+                    style="background: none; border: none; font-size: 24px; cursor: pointer; color: #999;">✕</button>
+            </div>
+            <div id="word-meaning-display" style="font-size: 18px; color: #444; margin: 20px 0; line-height: 1.6;">
+            </div>
+        </div>
+    </div>
+    <div id="modal-overlay" onclick="closeModal()"></div>
+
+    <div id="level-up-modal" class="modal-overlay-new">
+        <div class="modal-content-box">
+            <div class="lvl-emoji">🎊</div>
+            <h2>LEVEL UP!</h2>
+            <p>새로운 등급에 도달했습니다!</p>
+            <div id="new-level-name" class="new-lvl-badge">Lv.2 입문자</div>
+            <button onclick="closeLvlModal()" class="lvl-close-btn">멋져요!</button>
+        </div>
+    </div>
+    <script src="app.js"></script>
+    <audio id="levelUpSound" src="https://kongsaam.github.io/assets/sounds/level-up.mp3" preload="auto"></audio>
+</body>
+</html>
