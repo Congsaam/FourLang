@@ -5,7 +5,7 @@ let idx = 0;          // 현재 문장 번호 (0부터 시작)
 
 var lang = 'en', run = false, t1, t2;
 var isRepeatOne = false;
-var totalCount = 0; 
+var totalCount = 0;
 var lastLevels = { en: "", cn: "", jp: "", es: "" };
 
 let isCategorySyncing = false;
@@ -30,13 +30,13 @@ async function loadData() {
         if (!response.ok) throw new Error(`데이터 파일을 찾을 수 없습니다. (Status: ${response.status})`);
 
         const data = await response.json();
-        
+
         // JSON 구조에 맞춰 변수에 할당
         sentences = data.sentences || [];
         dictionary = data.dictionary || {};
 
         console.log("✅ 데이터 로드 성공! 총 문장 개수:", sentences.length);
-        
+
         // 데이터 로드 후 앱 초기화 실행
         initApp();
 
@@ -53,7 +53,7 @@ async function loadData() {
 function initApp() {
     const savedLang = localStorage.getItem('lastLang') || 'en';
     const savedIdx = localStorage.getItem(`lastIdx_${savedLang}`);
-    
+
     idx = savedIdx ? parseInt(savedIdx) : 0;
     totalCount = sentences.length;
 
@@ -76,10 +76,10 @@ function initCategory() {
 function jumpToCategory(e) {
     if (isCategorySyncing) return;
     var foundIdx = sentences.findIndex(d => d.cat === e.target.value);
-    if (foundIdx !== -1) { 
-        idx = foundIdx; 
-        update(); 
-        if (run) { resetTimer(); loop(); } 
+    if (foundIdx !== -1) {
+        idx = foundIdx;
+        update();
+        if (run) { resetTimer(); loop(); }
     }
 }
 
@@ -112,6 +112,26 @@ function applyIdx() {
         let val = parseInt(input.value);
         if (!isNaN(val)) idx = Math.max(0, Math.min(val - 1, totalCount - 1));
         update();
+    }
+}
+
+function openHelp() {
+    const modal = document.getElementById('help-modal');
+    if (modal) modal.classList.add('active');
+    document.body.classList.add('modal-open'); // 스크롤 방지용 (선택사항)
+}
+
+function closeHelp() {
+    const modal = document.getElementById('help-modal');
+    if (modal) modal.classList.remove('active');
+    document.body.classList.remove('modal-open');
+}
+
+// 배경 클릭 시 닫기 기능 추가 (선택)
+window.onclick = function (event) {
+    const modal = document.getElementById('help-modal');
+    if (event.target == modal) {
+        closeHelp();
     }
 }
 
@@ -243,7 +263,7 @@ function updateLevel() {
 
 function playLevelUpSound() {
     const audio = document.getElementById('levelUpSound');
-    if (audio) { audio.currentTime = 0; audio.volume = 0.5; audio.play().catch(()=>{}); }
+    if (audio) { audio.currentTime = 0; audio.volume = 0.5; audio.play().catch(() => { }); }
 }
 
 function showLevelUpModal(newName) {
@@ -297,19 +317,19 @@ function loop() {
 
 function resetTimer() { clearTimeout(t1); clearTimeout(t2); window.speechSynthesis.cancel(); }
 
-function speak(e) { 
-    if (e) e.stopPropagation(); 
-    window.speechSynthesis.cancel(); 
-    const msg = new SpeechSynthesisUtterance(sentences[idx][lang]); 
-    msg.lang = { en: 'en-US', cn: 'zh-CN', jp: 'ja-JP', es: 'es-ES' }[lang]; 
-    window.speechSynthesis.speak(msg); 
+function speak(e) {
+    if (e) e.stopPropagation();
+    window.speechSynthesis.cancel();
+    const msg = new SpeechSynthesisUtterance(sentences[idx][lang]);
+    msg.lang = { en: 'en-US', cn: 'zh-CN', jp: 'ja-JP', es: 'es-ES' }[lang];
+    window.speechSynthesis.speak(msg);
 }
 
-function speakWord(w, l) { 
-    window.speechSynthesis.cancel(); 
-    const msg = new SpeechSynthesisUtterance(w); 
-    msg.lang = { en: 'en-US', cn: 'zh-CN', jp: 'ja-JP', es: 'es-ES' }[l]; 
-    window.speechSynthesis.speak(msg); 
+function speakWord(w, l) {
+    window.speechSynthesis.cancel();
+    const msg = new SpeechSynthesisUtterance(w);
+    msg.lang = { en: 'en-US', cn: 'zh-CN', jp: 'ja-JP', es: 'es-ES' }[l];
+    window.speechSynthesis.speak(msg);
 }
 
 // [11] 이동 및 기타 보조 함수
