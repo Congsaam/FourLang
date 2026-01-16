@@ -3,7 +3,7 @@ let sentences = [];   // masterdata.json의 sentences 데이터를 저장
 let dictionary = {};  // masterdata.json의 dictionary 데이터를 저장
 let idx = 0;          // 현재 문장 번호 (0부터 시작)
 var noSleep = new NoSleep();
-var silenceAudio = new Audio("https://raw.githubusercontent.com/anars/blank-audio/master/10-seconds-of-silence.mp3");
+var silenceAudio = new Audio("https://raw.githubusercontent.com/anars/blank-audio/master/1-second-of-silence.mp3");
 silenceAudio.loop = true;
 
 var lang = 'en', run = false, t1, t2;
@@ -318,30 +318,25 @@ function toggle() {
 
     if (run) {
         noSleep.enable(); 
-        silenceAudio.play().catch(e => console.log("무음 재생 실패:", e));
+        silenceAudio.play().then(() => {
+            loop(); 
+        }).catch(e => console.log("채널 확보 실패", e));
 
         if ('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: 'FourLang',
                 artist: 'Congsaam',
-                album: 'BackGround Mode'
+                album: '실행 중'
             });
             navigator.mediaSession.playbackState = 'playing';
         }
-
-        // 4. 실제 학습 데이터 로직 실행
-        loop(); 
-        console.log("백그라운드 완전 유지 모드 시작");
-
     } else {
-        // 중단 시 모든 기능 해제
         noSleep.disable();
         silenceAudio.pause();
         if ('mediaSession' in navigator) {
             navigator.mediaSession.playbackState = 'paused';
         }
         resetTimer();
-        console.log("학습 중단");
     }
 }
 
