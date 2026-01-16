@@ -2,10 +2,8 @@
 let sentences = [];   // masterdata.json의 sentences 데이터를 저장
 let dictionary = {};  // masterdata.json의 dictionary 데이터를 저장
 let idx = 0;          // 현재 문장 번호 (0부터 시작)
-var noSleep = new NoSleep();
-const tickAudio = new Audio("https://raw.githubusercontent.com/anars/blank-audio/master/1-second-of-silence.mp3");
-tickAudio.loop = true;
 
+var noSleep = new NoSleep();
 var lang = 'en', run = false, t1, t2;
 var isRepeatOne = false;
 var totalCount = 0;
@@ -318,7 +316,6 @@ function toggle() {
 
     if (run) {
         noSleep.enable(); 
-        tickAudio.play().catch(e => console.log("무음 채널 대기"));
         loop(); 
         
         if ('mediaSession' in navigator) {
@@ -327,14 +324,9 @@ function toggle() {
                 artist: 'Congsaam',
                 album: '실행 중'
             });
-            navigator.mediaSession.playbackState = 'playing';
         }
     } else {
         noSleep.disable();
-        tickAudio.pause();
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.playbackState = 'paused';
-        }
         resetTimer();
     }
 }
