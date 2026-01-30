@@ -280,6 +280,21 @@ function showLevelUpModal(newName) {
     document.getElementById('level-up-modal').classList.add('active');
 }
 
+function closeLvlUpModal() {
+    const modal = document.getElementById('level-up-modal');
+    if (modal) modal.classList.remove('active');
+}
+
+document.addEventListener('click', function (e) {
+    const modal = document.getElementById('level-up-modal');
+    if (!modal) return;
+
+    // 모달이 열려 있고, 배경(overlay)을 클릭했을 때만 닫기
+    if (modal.classList.contains('active') && e.target === modal) {
+        modal.classList.remove('active');
+    }
+});
+
 // [9] 스트릭 및 테마
 function updateStreak() {
     const today = new Date(); today.setHours(0, 0, 0, 0);
