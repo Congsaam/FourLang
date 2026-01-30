@@ -281,8 +281,11 @@ function showLevelUpModal(newName) {
 }
 
 function closeLvlUpModal() {
+    const overlay = document.querySelector('.modal-overlay-new');
     const modal = document.getElementById('level-up-modal');
+
     if (modal) modal.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
 }
 
 document.addEventListener('click', function (e) {
